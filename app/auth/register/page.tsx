@@ -167,4 +167,17 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <button style={{ width: '100%', padding: 11, fontSize: 14, fontWeight: 600, background: '#534AB7', color: 'white', border: 'none', borderRadius: 6, cursor: 'pointer', marginTop: 4 }}
+          <button type="submit" disabled={loading}
+            style={{ width: '100%', padding: 11, fontSize: 14, fontWeight: 600, background: loading ? '#9B96D4' : '#534AB7', color: 'white', border: 'none', borderRadius: 6, cursor: loading ? 'not-allowed' : 'pointer', marginTop: 4 }}>
+            {loading ? 'Bezig...' : 'Account aanmaken'}
+          </button>
+        </form>
+
+        <div style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: '#6B6860' }}>
+          Al een account?{' '}
+          <a href="/auth/login" style={{ color: '#534AB7', fontWeight: 600 }}>Inloggen</a>
+        </div>
+      </div>
+    </div>
+  )
+}
