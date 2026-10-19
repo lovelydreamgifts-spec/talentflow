@@ -583,6 +583,25 @@ button, .btn, .nv, .opl, .ktcard, .scopt, .upload-opt, .chkrow, .day-chip { min-
             <i class="ti ti-arrow-right" style="font-size:16px;color:#B4B2A9;flex-shrink:0;"></i>
           </button>
         </div>
+        <!-- Notificaties portaal -->
+        <div id="portaalNotifs" style="display:none;margin-top:14px;display:flex;flex-direction:column;gap:8px;">
+          <!-- Profiel bekeken notificatie -->
+          <div id="notifBekeken" style="display:none;padding:10px 14px;background:#EEEDFE;border:1px solid #AFA9EC;border-radius:10px;display:flex;align-items:center;gap:10px;">
+            <i class="ti ti-eye" style="font-size:16px;color:#534AB7;flex-shrink:0;"></i>
+            <div style="flex:1;font-size:12px;color:#3C3489;">Jouw profiel is <strong id="notifBekendenTxt">1×</strong> bekeken door een stagebedrijf!</div>
+            <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;color:#B4B2A9;font-size:16px;">×</button>
+          </div>
+          <!-- Docentfeedback notificatie -->
+          <div id="notifDocent" style="display:none;padding:10px 14px;background:#E1F5EE;border:1px solid #5DCAA5;border-radius:10px;display:flex;align-items:center;gap:10px;">
+            <i class="ti ti-message-circle" style="font-size:16px;color:#0F6E56;flex-shrink:0;"></i>
+            <div style="flex:1;">
+              <div style="font-size:12px;font-weight:700;color:#085041;margin-bottom:2px;">Feedback van je docent</div>
+              <div style="font-size:12px;color:#0F6E56;" id="notifDocentTxt">Je profiel ziet er goed uit! Voeg nog een certificaat toe.</div>
+            </div>
+            <button onclick="this.parentElement.style.display='none'" style="background:none;border:none;cursor:pointer;color:#B4B2A9;font-size:16px;">×</button>
+          </div>
+        </div>
+
         <div id="portaalHint" style="margin-top:16px;padding:12px 14px;background:#F5F4F1;border-radius:8px;font-size:12px;color:#6B6860;text-align:center;display:none;">
           <i class="ti ti-info-circle"></i> Begin met je stageprofiel — daarna kun je het delen met stagebedrijven.
         </div>
@@ -600,9 +619,9 @@ button, .btn, .nv, .opl, .ktcard, .scopt, .upload-opt, .chkrow, .day-chip { min-
         <div style="font-size:13px;color:var(--gt);max-width:320px;margin:0 auto 16px;line-height:1.6;">In 6 stappen een professioneel profiel — klaar om te delen bij stagegesprekken.</div>
 
         <div class="fg2" style="max-width:380px;margin:0 auto 10px;text-align:left;">
-          <div class="fg"><label for="inNaam">Voornaam</label><input class="inp" id="inNaam" value="" placeholder="Jouw voornaam" autocomplete="given-name"></div>
-          <div class="fg"><label for="inAch">Achternaam</label><input class="inp" id="inAch" value="" placeholder="Jouw achternaam" autocomplete="family-name"></div>
-          <div class="fg"><label for="inEmail">E-mail</label><input class="inp" id="inEmail" type="email" placeholder="naam@student.roc.nl" autocomplete="email"></div>
+          <div class="fg"><label for="inNaam">Voornaam</label><input class="inp" id="inNaam" value="" placeholder="Jouw voornaam" autocomplete="given-name" oninput="updateMiniPreview()"></div>
+          <div class="fg"><label for="inAch">Achternaam</label><input class="inp" id="inAch" value="" placeholder="Jouw achternaam" autocomplete="family-name" oninput="updateMiniPreview()"></div>
+          <div class="fg"><label for="inEmail">E-mail</label><input class="inp" id="inEmail" type="email" placeholder="naam@student.roc.nl" autocomplete="email" oninput="updateMiniPreview()"></div>
           <div class="fg"><label for="inCode">Klascode van docent</label><input class="inp" id="inCode" placeholder="bijv. COMM4A" oninput="checkCode(this.value)" autocomplete="off" style="text-transform:uppercase;"></div>
           <div class="fg"><label for="inTel">Telefoonnummer</label><input class="inp" id="inTel" type="tel" placeholder="+31 6 12 34 56 78" autocomplete="tel"></div>
           <div class="fg"><label for="inVoorkeur">Voorkeur bereikbaarheid</label>
@@ -641,6 +660,16 @@ button, .btn, .nv, .opl, .ktcard, .scopt, .upload-opt, .chkrow, .day-chip { min-
           <label for="avgCheck" style="font-size:12px;color:var(--gt);cursor:pointer;">Ik ga akkoord met de <a href="#" style="color:var(--p);">gebruiksvoorwaarden</a> en begrijp hoe mijn gegevens worden gebruikt.</label>
         </div>
 
+        <div id="miniPrevCard" style="display:none;max-width:380px;margin:0 auto 14px;background:linear-gradient(135deg,#EEEDFE,#F5F4FF);border:1px solid #AFA9EC;border-radius:12px;padding:12px 14px;text-align:left;">
+          <div style="font-size:10px;font-weight:700;color:#534AB7;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">👁 Zo ziet jouw profiel eruit</div>
+          <div style="display:flex;align-items:center;gap:10px;">
+            <div id="miniAvatar" style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#534AB7,#7C75D4);color:white;font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">?</div>
+            <div>
+              <div id="miniNaam" style="font-size:14px;font-weight:700;color:#1A1916;">Jouw naam</div>
+              <div id="miniEmail" style="font-size:12px;color:#6B6860;">jouw@email.nl</div>
+            </div>
+          </div>
+        </div>
         <button class="btn btnp" id="startBtn" style="width:100%;max-width:380px;justify-content:center;" onclick="goS(2)">Starten <i class="ti ti-arrow-right" aria-hidden="true"></i></button>
       </div>
     </div>
@@ -873,6 +902,12 @@ button, .btn, .nv, .opl, .ktcard, .scopt, .upload-opt, .chkrow, .day-chip { min-
               <div class="video-opt-sub">Camera gebruiken</div>
               <div class="video-opt-note">Telefoon & laptop</div>
             </div>
+            <div class="video-opt" onclick="showQRModal()" role="button" tabindex="0" aria-label="QR code voor telefoon">
+              <i class="ti ti-qrcode" aria-hidden="true"></i>
+              <div class="video-opt-title">Via telefoon</div>
+              <div class="video-opt-sub">Scan QR-code</div>
+              <div class="video-opt-note">Betere camera</div>
+            </div>
           </div>
           <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
             <div style="flex:1;height:1px;background:var(--br);"></div>
@@ -905,17 +940,28 @@ button, .btn, .nv, .opl, .ktcard, .scopt, .upload-opt, .chkrow, .day-chip { min-
         </div>
 
         <div id="cameraRecorder" style="display:none;">
+          <!-- Countdown overlay -->
+          <div id="recCountdown" style="display:none;position:absolute;inset:0;background:rgba(0,0,0,.7);z-index:10;align-items:center;justify-content:center;border-radius:var(--rad);">
+            <div style="font-size:72px;font-weight:900;color:white;text-shadow:0 2px 16px rgba(0,0,0,.5);" id="recCountNum">3</div>
+          </div>
           <div style="background:black;border-radius:var(--rad);overflow:hidden;margin-bottom:8px;position:relative;">
             <video id="cameraStream" autoplay muted playsinline style="width:100%;display:block;max-height:240px;object-fit:cover;" aria-label="Camera preview"></video>
             <div id="recTimer" style="display:none;position:absolute;top:10px;right:10px;background:rgba(224,61,45,.9);color:white;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:700;" aria-live="polite">
               <i class="ti ti-circle-filled" style="font-size:10px;" aria-hidden="true"></i> <span id="recTime">0:00</span>
             </div>
+            <!-- Waarschuwing bij 1:40 -->
+            <div id="recWarn" style="display:none;position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(224,61,45,.9);color:white;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap;">⚠️ Nog 20 seconden!</div>
           </div>
           <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;">
-            <button class="btn btnp" id="btnRec" onclick="toggleRec()"><i class="ti ti-circle-filled" style="color:#ff4444;font-size:12px;" aria-hidden="true"></i> Start opname</button>
+            <button class="btn btnp" id="btnRec" onclick="startRecordWithCountdown()"><i class="ti ti-circle-filled" style="color:#ff4444;font-size:12px;" aria-hidden="true"></i> Start opname</button>
             <button class="btn btnsm" onclick="stopCamera()" style="color:var(--r);border-color:var(--r);" aria-label="Camera stoppen"><i class="ti ti-x" aria-hidden="true"></i> Annuleren</button>
           </div>
           <div style="font-size:11px;color:var(--gt2);text-align:center;">Max 2:00 min · houd telefoon rechtop</div>
+          <!-- Takes vergelijken -->
+          <div id="takesWrap" style="display:none;margin-top:10px;border-top:1px solid var(--br);padding-top:10px;">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--gt2);margin-bottom:6px;">Eerdere takes</div>
+            <div id="takesList" style="display:flex;flex-direction:column;gap:6px;"></div>
+          </div>
         </div>
 
         <!-- AVG VIDEO OPT-IN -->
@@ -1062,9 +1108,28 @@ button, .btn, .nv, .opl, .ktcard, .scopt, .upload-opt, .chkrow, .day-chip { min-
       
 
 
+      <!-- Docentfeedback op profiel -->
+      <div id="docentFeedbackCard" style="display:none;margin-bottom:10px;background:#E1F5EE;border:1px solid #5DCAA5;border-radius:12px;padding:14px 16px;">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+          <i class="ti ti-message-circle" style="font-size:15px;color:#0F6E56;"></i>
+          <span style="font-size:12px;font-weight:700;color:#085041;">Feedback van je docent</span>
+          <span id="feedbackDocentNm" style="font-size:11px;color:#0F6E56;margin-left:auto;"></span>
+        </div>
+        <div style="font-size:13px;color:#0F6E56;line-height:1.5;" id="feedbackDocentTxt"></div>
+        <div style="display:flex;gap:6px;margin-top:8px;">
+          <span id="feedbackBadge" style="font-size:10px;padding:2px 8px;border-radius:20px;background:#1D9E75;color:white;font-weight:700;"></span>
+        </div>
+      </div>
+
+      <!-- Profiel bekeken teller -->
+      <div id="profielBekendenCard" style="display:none;margin-bottom:10px;background:#EEEDFE;border:1px solid #AFA9EC;border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:10px;">
+        <i class="ti ti-eye" style="font-size:16px;color:#534AB7;"></i>
+        <div style="font-size:12px;color:#3C3489;"><strong id="profielBekendenAantal">0</strong> stagebedrijf(ven) hebben jouw profiel bekeken</div>
+      </div>
+
       <div class="card" style="text-align:center;padding:18px;">
         <div style="display:flex;justify-content:center;gap:7px;margin-bottom:12px;flex-wrap:wrap;">
-          <div class="tbadge tbg"><i class="ti ti-rosette-discount-check" style="font-size:12px;" aria-hidden="true"></i>Geverifieerd · ROC Mondriaan</div>
+          <div class="tbadge tbg"><i class="ti ti-rosette-discount-check" style="font-size:12px;" aria-hidden="true"></i>Geverifieerd · <span id="prevSchoolBadge">ROC</span></div>
           <div class="tbadge tbp"><i class="ti ti-shield-check" style="font-size:12px;" aria-hidden="true"></i>SBB-gecertificeerd</div>
         </div>
         <div class="sharebox">
@@ -1199,7 +1264,7 @@ button, .btn, .nv, .opl, .ktcard, .scopt, .upload-opt, .chkrow, .day-chip { min-
 <div class="modal-backdrop" id="contactModal" onclick="if(event.target===this)closeContact()" role="dialog" aria-modal="true" aria-labelledby="contactModalTitle">
   <div class="modal">
     <div class="modal-head">
-      <div><div style="font-size:15px;font-weight:700;" id="contactModalTitle">Contactgegevens student</div><div style="font-size:12px;opacity:.8;margin-top:2px;">Geverifieerd · ROC Mondriaan</div></div>
+      <div><div style="font-size:15px;font-weight:700;" id="contactModalTitle">Contactgegevens student</div><div style="font-size:12px;opacity:.8;margin-top:2px;">Geverifieerd · <span id="contactSchoolBadge">ROC</span></div></div>
       <button class="modal-close" onclick="closeContact()" aria-label="Sluit contactgegevens">×</button>
     </div>
     <div class="modal-body">
@@ -2054,6 +2119,10 @@ function buildProfiel() {
   var cl=document.getElementById('contactMailLink');if(cl)cl.href='mailto:'+em;
   var slug=(voor+'-'+ach).toLowerCase().replace(/[^a-z]/g,'-').replace(/-+/g,'-');
   var su=document.getElementById('shareUrl');if(su)su.textContent='stagelink.nl/'+(slug||'jouw-profiel');
+  // Schoolnaam dynamisch in badges
+  var school=(document.getElementById('inSchool')||{}).value||'ROC';
+  var sb=document.getElementById('prevSchoolBadge');if(sb)sb.textContent=school;
+  var cb=document.getElementById('contactSchoolBadge');if(cb)cb.textContent=school;
 }
 
 
@@ -2193,12 +2262,15 @@ function formatSize(bytes) {
   return bytes < 1048576 ? Math.round(bytes/1024) + ' KB' : (bytes/1048576).toFixed(1) + ' MB';
 }
 
+var _takes = []; var _takeNum = 0;
+
 function startCamera() {
   if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
     alert('Camera niet beschikbaar. Gebruik Chrome of Safari, of upload een bestand.'); return;
   }
   document.getElementById('uploadKeuze').style.display = 'none';
-  document.getElementById('cameraRecorder').style.display = 'block';
+  var rec = document.getElementById('cameraRecorder');
+  rec.style.display = 'block'; rec.style.position = 'relative';
   navigator.mediaDevices.getUserMedia({video:true, audio:true})
     .then(function(stream) { document.getElementById('cameraStream').srcObject = stream; window._camStream = stream; })
     .catch(function(err) { alert('Camera kon niet starten: ' + err.message); stopCamera(); });
@@ -2211,9 +2283,22 @@ function stopCamera() {
   document.getElementById('cameraRecorder').style.display = 'none';
   document.getElementById('uploadKeuze').style.display = 'block';
   var btn = document.getElementById('btnRec');
-  if (btn) btn.innerHTML = '<i class="ti ti-circle-filled" style="color:#ff4444;font-size:12px;"></i> Start opname';
-  document.getElementById('recTimer').style.display = 'none';
+  if (btn) { btn.innerHTML = '<i class="ti ti-circle-filled" style="color:#ff4444;font-size:12px;"></i> Start opname'; btn.disabled = false; }
+  var rt = document.getElementById('recTimer'); if(rt) rt.style.display = 'none';
+  var rw = document.getElementById('recWarn'); if(rw) rw.style.display = 'none';
   recSecs = 0;
+}
+
+function startRecordWithCountdown() {
+  var btn = document.getElementById('btnRec'); btn.disabled = true;
+  var cd = document.getElementById('recCountdown'); var cdNum = document.getElementById('recCountNum');
+  if (!cd) { toggleRec(); btn.disabled = false; return; }
+  cd.style.display = 'flex'; var n = 3; cdNum.textContent = n;
+  var cdInt = setInterval(function(){
+    n--;
+    if (n <= 0) { clearInterval(cdInt); cd.style.display = 'none'; btn.disabled = false; toggleRec(); }
+    else { cdNum.textContent = n; }
+  }, 1000);
 }
 
 function toggleRec() {
@@ -2222,27 +2307,74 @@ function toggleRec() {
     mediaRecorder = new MediaRecorder(window._camStream);
     mediaRecorder.ondataavailable = function(e){ if(e.data.size>0) recChunks.push(e.data); };
     mediaRecorder.onstop = function() {
-      var blob = new Blob(recChunks, {type:'video/webm'});
+      var blob = new Blob(recChunks, {type:'video/webm'}); var dur = recSecs;
+      var url = URL.createObjectURL(blob);
+      _takeNum++; _takes.push({url:url, size:blob.size, dur:dur, num:_takeNum}); renderTakes();
       stopCamera();
       if (_videoObjectURL) URL.revokeObjectURL(_videoObjectURL);
-      _videoObjectURL = URL.createObjectURL(blob);
-      showVideoPreview('Opname.webm', formatSize(blob.size), new File([blob],'opname.webm',{type:'video/webm'}));
+      _videoObjectURL = url;
+      showVideoPreview('Take '+_takeNum+'.webm', formatSize(blob.size), new File([blob],'take-'+_takeNum+'.webm',{type:'video/webm'}));
+      var m2=Math.floor(dur/60), s2=dur%60;
+      showToast('✓ Take '+_takeNum+' opgeslagen — '+m2+':'+(s2<10?'0':'')+s2+' min', 'green');
     };
     mediaRecorder.start();
     document.getElementById('btnRec').innerHTML = '<i class="ti ti-player-stop-filled" style="color:white;"></i> Stop opname';
-    document.getElementById('recTimer').style.display = 'block';
-    recSecs = 0;
+    var rt = document.getElementById('recTimer'); if(rt) rt.style.display = 'block';
+    recSecs = 0; var rw0 = document.getElementById('recWarn'); if(rw0) rw0.style.display = 'none';
     recInterval = setInterval(function(){
       recSecs++;
       var m=Math.floor(recSecs/60), s=recSecs%60;
-      document.getElementById('recTime').textContent = m+':'+(s<10?'0':'')+s;
+      var rt2=document.getElementById('recTime'); if(rt2) rt2.textContent = m+':'+(s<10?'0':'')+s;
+      var rw2=document.getElementById('recWarn');
+      if(rw2) rw2.style.display = (recSecs >= 100 && recSecs < 120) ? 'block' : 'none';
       if (recSecs >= 120) toggleRec();
     }, 1000);
   } else {
-    clearInterval(recInterval);
-    mediaRecorder.stop();
-    document.getElementById('recTimer').style.display = 'none';
+    clearInterval(recInterval); mediaRecorder.stop();
+    var rt=document.getElementById('recTimer'); if(rt) rt.style.display = 'none';
   }
+}
+
+function renderTakes() {
+  var wrap = document.getElementById('takesWrap'); var list = document.getElementById('takesList');
+  if (!wrap || !list) return;
+  if (_takes.length === 0) { wrap.style.display = 'none'; return; }
+  wrap.style.display = 'block'; list.innerHTML = '';
+  _takes.forEach(function(t, i){
+    var dur = Math.floor(t.dur/60)+':'+(t.dur%60<10?'0':'')+t.dur%60;
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:7px 10px;background:#F5F4F1;border-radius:8px;';
+    row.innerHTML = '<span style="font-size:12px;font-weight:700;color:var(--p);">Take '+t.num+'</span><span style="font-size:11px;color:var(--gt);">'+dur+' · '+formatSize(t.size)+'</span>'
+      +'<button onclick="useTake('+i+')" style="margin-left:auto;font-size:11px;padding:3px 10px;border:1.5px solid var(--p);color:var(--p);background:none;border-radius:6px;cursor:pointer;font-weight:600;">Gebruik deze</button>'
+      +'<button onclick="deleteTake('+i+')" style="font-size:13px;background:none;border:none;cursor:pointer;color:#B4B2A9;"><i class="ti ti-trash"></i></button>';
+    list.appendChild(row);
+  });
+}
+
+function useTake(i) {
+  var t = _takes[i]; if (!t) return;
+  _videoObjectURL = t.url;
+  showVideoPreview('Take '+t.num+'.webm', formatSize(t.size), null);
+  showToast('✓ Take '+t.num+' geselecteerd als jouw videopitch', 'green');
+}
+
+function deleteTake(i) {
+  if (_takes[i]) URL.revokeObjectURL(_takes[i].url);
+  _takes.splice(i, 1); renderTakes();
+}
+
+function showToast(msg, type) {
+  var t = document.getElementById('tfToast');
+  if (!t) {
+    t = document.createElement('div'); t.id = 'tfToast';
+    t.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:10px 18px;border-radius:20px;font-size:13px;font-weight:600;z-index:9999;transition:opacity .3s;pointer-events:none;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.background = type === 'green' ? '#1D9E75' : '#534AB7';
+  t.style.color = 'white'; t.style.opacity = '1';
+  clearTimeout(t._to);
+  t._to = setTimeout(function(){ t.style.opacity = '0'; }, 3000);
 }
 
 
@@ -2525,6 +2657,73 @@ function toggleSkSection(id) {
 function checkAvg() {
   // No longer blocks the button - checkbox is checked on navigate
 }
+
+// ── MINI PREVIEW (Punt 5) ──
+function updateMiniPreview() {
+  var naam = (document.getElementById('inNaam')||{}).value || '';
+  var ach = (document.getElementById('inAch')||{}).value || '';
+  var email = (document.getElementById('inEmail')||{}).value || '';
+  var card = document.getElementById('miniPrevCard');
+  if (!card) return;
+  var fullNaam = (naam + ' ' + ach).trim();
+  if (fullNaam) {
+    card.style.display = 'block';
+    var av = document.getElementById('miniAvatar');
+    if (av) av.textContent = naam[0] ? naam[0].toUpperCase() : '?';
+    var nm = document.getElementById('miniNaam');
+    if (nm) nm.textContent = fullNaam;
+    var em = document.getElementById('miniEmail');
+    if (em) em.textContent = email || 'jouw@email.nl';
+  } else {
+    card.style.display = 'none';
+  }
+}
+
+// ── QR CODE (Punt 6) ──
+function showQRModal() {
+  var url = window.location.href.split('?')[0];
+  document.getElementById('qrUrlTxt').textContent = url;
+  var modal = document.getElementById('qrModal');
+  modal.style.display = 'flex';
+  drawQR(url);
+}
+function closeQRModal() {
+  document.getElementById('qrModal').style.display = 'none';
+}
+function copyQRUrl() {
+  var url = document.getElementById('qrUrlTxt').textContent;
+  navigator.clipboard.writeText(url).then(function(){
+    showToast('Link gekopieerd! Plak in je telefoon browser.', 'green');
+    closeQRModal();
+  }).catch(function(){ showToast('Link: ' + url, 'purple'); });
+}
+function drawQR(text) {
+  // Simple QR code using canvas + Google Charts API fallback
+  var canvas = document.getElementById('qrCanvas');
+  if (!canvas) return;
+  var ctx = canvas.getContext('2d');
+  // Load QR via image from quick-chart.io (free, no auth)
+  var img = new Image();
+  var encoded = encodeURIComponent(text);
+  img.onload = function() { ctx.drawImage(img, 0, 0, 160, 160); };
+  img.onerror = function() {
+    ctx.fillStyle = '#f0f0f0'; ctx.fillRect(0,0,160,160);
+    ctx.fillStyle = '#534AB7'; ctx.font = '12px sans-serif'; ctx.textAlign='center';
+    ctx.fillText('Kopieer de link', 80, 75);
+    ctx.fillText('hieronder →', 80, 95);
+  };
+  img.src = 'https://quickchart.io/qr?text=' + encoded + '&size=160&margin=1';
+}
+
+// ── DOCENT FEEDBACK (Punt 7) ──
+function stuurDocentFeedback(studentId, feedback) {
+  // Placeholder: in a real implementation this would call Supabase
+  showToast('Feedback verstuurd!', 'green');
+}
+function laadDocentFeedback() {
+  // Placeholder: check Supabase for feedback on this student
+  // For demo: show hardcoded example if docent tab is active
+}
 function copyUrl() {
   var url = document.getElementById('shareUrl').textContent;
   navigator.clipboard.writeText('https://' + url).then(function(){
@@ -2547,6 +2746,7 @@ function updateStepDots(n) {
 // ============ DOCENT ============
 function dTab(i){[0,1,2].forEach(function(n){var dv=document.getElementById('dv'+n);var dt=document.getElementById('dtab'+n)||document.getElementById('dt'+n);if(dv)dv.classList.toggle('on',n===i);if(dt)dt.classList.toggle('on',n===i);});}
 function setF(el){document.querySelectorAll('.frow .fchip').forEach(function(c){c.classList.remove('on');});el.classList.add('on');}
+var _feedbackStudentId = null;
 function switchKlas(idx){
   var k=KLASSEN_DB[idx]||KLASSEN_DB[0];
   document.getElementById('dKlasNm').textContent=k.naam+' — '+k.opl;
@@ -2554,6 +2754,60 @@ function switchKlas(idx){
   document.getElementById('dSt1').textContent=Math.round(k.totaal*0.17);
   document.getElementById('dSt2').textContent=k.totaal-k.compleet-Math.round(k.totaal*0.17);
   document.getElementById('dSt3').textContent=k.pct+'%';
+  renderStudentenDemo(k);
+}
+function renderStudentenDemo(k) {
+  var tbl = document.getElementById('studentenTabel'); if(!tbl) return;
+  var demo = [
+    {id:'s1',naam:'Emma de Vries',pct:85,status:'compleet'},
+    {id:'s2',naam:'Liam Jansen',pct:60,status:'bezig'},
+    {id:'s3',naam:'Sophie Bakker',pct:20,status:'gestart'},
+    {id:'s4',naam:'Noah Mulder',pct:0,status:'nieuw'},
+  ];
+  var statusClr = {compleet:'#065F46',bezig:'#92400E',gestart:'#1D4ED8',nieuw:'#6B6860'};
+  var statusBg = {compleet:'#D1FAE5',bezig:'#FEF3C7',gestart:'#DBEAFE',nieuw:'#F3F4F6'};
+  tbl.innerHTML = '';
+  demo.forEach(function(s){
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 12px;background:white;border:1px solid var(--br);border-radius:10px;margin-bottom:6px;';
+    var av = document.createElement('div');
+    av.style.cssText = 'width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#534AB7,#7C75D4);color:white;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;';
+    av.textContent = s.naam[0];
+    var info = document.createElement('div');
+    info.style.cssText = 'flex:1;min-width:0;';
+    info.innerHTML = '<div style="font-size:13px;font-weight:700;color:#1A1916;">'+s.naam+'</div>'
+      +'<div style="display:flex;align-items:center;gap:6px;margin-top:3px;">'
+      +'<div style="flex:1;height:4px;background:#E8E6E1;border-radius:4px;"><div style="height:4px;background:var(--t);border-radius:4px;width:'+s.pct+'%;"></div></div>'
+      +'<span style="font-size:11px;color:var(--gt);">'+s.pct+'%</span>'
+      +'<span style="font-size:10px;padding:1px 7px;border-radius:20px;background:'+statusBg[s.status]+';color:'+statusClr[s.status]+';font-weight:600;">'+s.status+'</span>'
+      +'</div>';
+    var fbtn = document.createElement('button');
+    fbtn.style.cssText = 'font-size:11px;padding:4px 10px;border-radius:20px;background:var(--pl);color:var(--p);border:1px solid var(--pb);cursor:pointer;font-family:inherit;font-weight:600;white-space:nowrap;flex-shrink:0;';
+    fbtn.innerHTML = '<i class="ti ti-message-circle"></i> Feedback';
+    fbtn.onclick = (function(sid, snaam){ return function(){ openFeedbackModal(sid, snaam); }; })(s.id, s.naam);
+    row.appendChild(av); row.appendChild(info); row.appendChild(fbtn);
+    tbl.appendChild(row);
+  });
+}
+function openFeedbackModal(studentId, naam) {
+  _feedbackStudentId = studentId;
+  var nm = document.getElementById('feedbackModalNaam');
+  if(nm) nm.textContent = 'Voor: ' + naam;
+  var tekst = document.getElementById('feedbackTekst');
+  if(tekst) tekst.value = '';
+  var modal = document.getElementById('feedbackModal');
+  if(modal) modal.style.display = 'flex';
+}
+function sluitFeedbackModal() {
+  var modal = document.getElementById('feedbackModal');
+  if(modal) modal.style.display = 'none';
+}
+function verstuurFeedback() {
+  var tekst = (document.getElementById('feedbackTekst')||{}).value || '';
+  if(!tekst.trim()){showToast('Schrijf eerst je feedback.','purple');return;}
+  // In production: save to Supabase
+  sluitFeedbackModal();
+  showToast('✅ Feedback verstuurd naar student!','green');
 }
 function maakKlas(){
   var nm=document.getElementById('nieuwKlas').value.trim();
@@ -3320,6 +3574,10 @@ function buildProfiel() {
   var cl=document.getElementById('contactMailLink');if(cl)cl.href='mailto:'+em;
   var slug=(voor+'-'+ach).toLowerCase().replace(/[^a-z]/g,'-').replace(/-+/g,'-');
   var su=document.getElementById('shareUrl');if(su)su.textContent='stagelink.nl/'+(slug||'jouw-profiel');
+  // Schoolnaam dynamisch in badges
+  var school=(document.getElementById('inSchool')||{}).value||'ROC';
+  var sb=document.getElementById('prevSchoolBadge');if(sb)sb.textContent=school;
+  var cb=document.getElementById('contactSchoolBadge');if(cb)cb.textContent=school;
 }
 
 
@@ -3464,7 +3722,8 @@ function startCamera() {
     alert('Camera niet beschikbaar. Gebruik Chrome of Safari, of upload een bestand.'); return;
   }
   document.getElementById('uploadKeuze').style.display = 'none';
-  document.getElementById('cameraRecorder').style.display = 'block';
+  var cr = document.getElementById('cameraRecorder');
+  if (cr) { cr.style.display = 'block'; cr.style.position = 'relative'; }
   navigator.mediaDevices.getUserMedia({video:true, audio:true})
     .then(function(stream) { document.getElementById('cameraStream').srcObject = stream; window._camStream = stream; })
     .catch(function(err) { alert('Camera kon niet starten: ' + err.message); stopCamera(); });
@@ -3474,12 +3733,34 @@ function stopCamera() {
   if (window._camStream) { window._camStream.getTracks().forEach(function(t){t.stop();}); window._camStream = null; }
   if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
   clearInterval(recInterval);
+  var cw = document.getElementById('recWarn'); if(cw) cw.style.display='none';
   document.getElementById('cameraRecorder').style.display = 'none';
   document.getElementById('uploadKeuze').style.display = 'block';
   var btn = document.getElementById('btnRec');
-  if (btn) btn.innerHTML = '<i class="ti ti-circle-filled" style="color:#ff4444;font-size:12px;"></i> Start opname';
+  if (btn) { btn.innerHTML = '<i class="ti ti-circle-filled" style="color:#ff4444;font-size:12px;"></i> Start opname'; btn.disabled = false; }
   document.getElementById('recTimer').style.display = 'none';
   recSecs = 0;
+}
+
+function startRecordWithCountdown() {
+  var cd = document.getElementById('recCountdown');
+  var cn = document.getElementById('recCountNum');
+  if (!cd || !cn) { toggleRec(); return; }
+  cd.style.display = 'flex';
+  var num = 3;
+  cn.textContent = num;
+  var btn = document.getElementById('btnRec');
+  if (btn) btn.disabled = true;
+  var iv = setInterval(function() {
+    num--;
+    if (num <= 0) {
+      clearInterval(iv);
+      cd.style.display = 'none';
+      toggleRec();
+    } else {
+      cn.textContent = num;
+    }
+  }, 1000);
 }
 
 function toggleRec() {
@@ -3489,19 +3770,31 @@ function toggleRec() {
     mediaRecorder.ondataavailable = function(e){ if(e.data.size>0) recChunks.push(e.data); };
     mediaRecorder.onstop = function() {
       var blob = new Blob(recChunks, {type:'video/webm'});
+      var takeBlob = blob;
+      var takeNum = ++_takeNum;
+      var takeUrl = URL.createObjectURL(blob);
+      _takes.push({num:takeNum, url:takeUrl, blob:takeBlob, size:blob.size});
+      renderTakes();
+      var tw = document.getElementById('takesWrap'); if(tw) tw.style.display='block';
+      var cw = document.getElementById('recWarn'); if(cw) cw.style.display='none';
       stopCamera();
       if (_videoObjectURL) URL.revokeObjectURL(_videoObjectURL);
-      _videoObjectURL = URL.createObjectURL(blob);
+      _videoObjectURL = takeUrl;
       showVideoPreview('Opname.webm', formatSize(blob.size), new File([blob],'opname.webm',{type:'video/webm'}));
+      showToast('✅ Take ' + takeNum + ' opgeslagen! Je kunt nog een take opnemen of doorgaan.', 'green');
     };
     mediaRecorder.start();
-    document.getElementById('btnRec').innerHTML = '<i class="ti ti-player-stop-filled" style="color:white;"></i> Stop opname';
+    var btn = document.getElementById('btnRec');
+    if (btn) btn.innerHTML = '<i class="ti ti-player-stop-filled" style="color:white;"></i> Stop opname';
     document.getElementById('recTimer').style.display = 'block';
     recSecs = 0;
+    var cw = document.getElementById('recWarn'); if(cw) cw.style.display='none';
     recInterval = setInterval(function(){
       recSecs++;
       var m=Math.floor(recSecs/60), s=recSecs%60;
       document.getElementById('recTime').textContent = m+':'+(s<10?'0':'')+s;
+      var warn = document.getElementById('recWarn');
+      if (recSecs === 100 && warn) warn.style.display = 'block';
       if (recSecs >= 120) toggleRec();
     }, 1000);
   } else {
@@ -3511,6 +3804,35 @@ function toggleRec() {
   }
 }
 
+function renderTakes() {
+  var list = document.getElementById('takesList'); if (!list) return;
+  list.innerHTML = '';
+  _takes.forEach(function(t, i) {
+    var row = document.createElement('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:6px 8px;background:#f8f8f8;border-radius:8px;';
+    row.innerHTML = '<span style="font-size:12px;font-weight:700;color:#534AB7;flex:1;">Take ' + t.num + ' — ' + formatSize(t.size) + '</span>'
+      + '<button onclick="useTake(' + i + ')" style="font-size:11px;padding:3px 10px;border-radius:20px;background:#534AB7;color:white;border:none;cursor:pointer;font-family:inherit;">Gebruik deze</button>'
+      + '<button onclick="deleteTake(' + i + ')" style="background:none;border:none;cursor:pointer;color:#E03D2D;font-size:14px;padding:0;"><i class="ti ti-trash"></i></button>';
+    list.appendChild(row);
+  });
+}
+
+function useTake(i) {
+  var t = _takes[i];
+  if (!t) return;
+  if (_videoObjectURL && _videoObjectURL !== t.url) URL.revokeObjectURL(_videoObjectURL);
+  _videoObjectURL = t.url;
+  showVideoPreview('Opname.webm', formatSize(t.size), new File([t.blob],'opname.webm',{type:'video/webm'}));
+  showToast('Take ' + t.num + ' geselecteerd!', 'purple');
+}
+
+function deleteTake(i) {
+  var t = _takes[i];
+  if (t && t.url) URL.revokeObjectURL(t.url);
+  _takes.splice(i, 1);
+  renderTakes();
+  if (!_takes.length) { var tw = document.getElementById('takesWrap'); if(tw) tw.style.display='none'; }
+}
 
 
 
@@ -3923,5 +4245,36 @@ function setTheme(theme) {
 buildLangs();
 document.addEventListener("DOMContentLoaded",function(){setTimeout(initSupabase,200);setTheme("classic");});
 </script>
+
+<!-- QR Code Modal -->
+<div id="qrModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:16px;padding:24px;max-width:320px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+    <div style="font-size:18px;font-weight:800;color:#1A1916;margin-bottom:6px;">📱 Opnemen via telefoon</div>
+    <div style="font-size:13px;color:#6B6860;margin-bottom:16px;line-height:1.5;">Scan deze QR-code met je telefoon om de pagina te openen en direct op te nemen met je achterste camera.</div>
+    <div id="qrCodeContainer" style="display:inline-block;padding:12px;background:#f9f9f9;border-radius:12px;margin-bottom:14px;">
+      <canvas id="qrCanvas" width="160" height="160"></canvas>
+    </div>
+    <div style="font-size:11px;color:#6B6860;margin-bottom:16px;">
+      <i class="ti ti-link" style="font-size:11px;"></i> <span id="qrUrlTxt" style="word-break:break-all;"></span>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;">
+      <button onclick="copyQRUrl()" class="btn btnsm" style="border-color:var(--p);color:var(--p);"><i class="ti ti-copy"></i> Kopieer link</button>
+      <button onclick="closeQRModal()" class="btn btnsm" style="border-color:var(--br);color:var(--gt);">Sluiten</button>
+    </div>
+  </div>
+</div>
+
+<!-- Docent Feedback Modal -->
+<div id="feedbackModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9000;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:white;border-radius:16px;padding:24px;max-width:340px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+    <div style="font-size:17px;font-weight:800;color:#1A1916;margin-bottom:4px;">💬 Feedback geven</div>
+    <div style="font-size:13px;color:#6B6860;margin-bottom:14px;" id="feedbackModalNaam">Student</div>
+    <textarea id="feedbackTekst" class="inp" rows="4" placeholder="Schrijf hier je feedback voor de student..." style="width:100%;resize:vertical;font-family:inherit;"></textarea>
+    <div style="display:flex;gap:8px;margin-top:12px;">
+      <button onclick="verstuurFeedback()" class="btn btnp" style="flex:1;justify-content:center;"><i class="ti ti-send"></i> Versturen</button>
+      <button onclick="sluitFeedbackModal()" class="btn" style="border-color:var(--br);color:var(--gt);">Annuleren</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
