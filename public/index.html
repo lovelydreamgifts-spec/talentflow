@@ -1971,7 +1971,7 @@ function buildLangs() {
     var row=document.createElement('div'); row.className='lang-row';
     var dots='';
     for(var i=1;i<=5;i++){dots+='<div class="ldotc'+(i<=lang.lvl?' on':'')+'" onclick="setLangLvl('+idx+','+i+')"></div>';}
-    row.innerHTML='<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:13px;font-weight:500;">'+lang.nm+'</span><button onclick="removeLang('+idx+')" style="background:none;border:none;cursor:pointer;padding:2px;line-height:1;color:#B4B2A9;font-size:15px;" title="Verwijder taal" onmouseover="this.style.color=\'#E03D2D\'" onmouseout="this.style.color=\'#B4B2A9\'"><i class="ti ti-x"></i></button></div><div class="lang-dots">'+dots+'</div>';
+    row.innerHTML='<div style="display:flex;align-items:center;gap:8px;"><button onclick="removeLang('+idx+')" style="background:none;border:none;cursor:pointer;padding:0;line-height:1;color:#E03D2D;font-size:16px;flex-shrink:0;" title="Verwijder taal"><i class="ti ti-x"></i></button><span style="font-size:13px;font-weight:500;">'+lang.nm+'</span></div><div class="lang-dots">'+dots+'</div>';
     el.appendChild(row);
   });
 }
@@ -3237,7 +3237,7 @@ function buildLangs() {
     var row=document.createElement('div'); row.className='lang-row';
     var dots='';
     for(var i=1;i<=5;i++){dots+='<div class="ldotc'+(i<=lang.lvl?' on':'')+'" onclick="setLangLvl('+idx+','+i+')"></div>';}
-    row.innerHTML='<div style="display:flex;align-items:center;gap:6px;"><span style="font-size:13px;font-weight:500;">'+lang.nm+'</span><button onclick="removeLang('+idx+')" style="background:none;border:none;cursor:pointer;padding:2px;line-height:1;color:#B4B2A9;font-size:15px;" title="Verwijder taal" onmouseover="this.style.color=\'#E03D2D\'" onmouseout="this.style.color=\'#B4B2A9\'"><i class="ti ti-x"></i></button></div><div class="lang-dots">'+dots+'</div>';
+    row.innerHTML='<div style="display:flex;align-items:center;gap:8px;"><button onclick="removeLang('+idx+')" style="background:none;border:none;cursor:pointer;padding:0;line-height:1;color:#E03D2D;font-size:16px;flex-shrink:0;" title="Verwijder taal"><i class="ti ti-x"></i></button><span style="font-size:13px;font-weight:500;">'+lang.nm+'</span></div><div class="lang-dots">'+dots+'</div>';
     el.appendChild(row);
   });
 }
