@@ -2909,7 +2909,31 @@ function initSupabase(){
   }_sb=window.supabase.createClient('https://rhpqznyfnxrjlrsjiyfw.supabase.co','sb_publishable_lblRq1p075VdzLkWBA3fDA_IfWLx6kF');checkSession();}
 async function checkSession(){var overlay=document.getElementById('loginOverlay');var res=await _sb.auth.getUser();var user=res.data.user;if(!user){if(overlay)overlay.style.display='flex';return;}_sbUser=user;if(overlay)overlay.style.display='none';var pr=await _sb.from('profiles').select('*').eq('id',user.id).single();var prof=pr.data;if(prof){_sbRole=prof.role;var n=document.getElementById('inNaam');if(n&&!n.value)n.value=prof.voornaam||'';var a=document.getElementById('inAch');if(a&&!a.value)a.value=prof.achternaam||'';var e=document.getElementById('inEmail');if(e&&!e.value)e.value=user.email||'';if(prof.role==='docent')setMode('docent');}var sp=await _sb.from('student_profielen').select('*').eq('student_id',user.id).single();if(sp.data)loadSavedProfiel(sp.data);addLogoutBtn(user.email);window._autoSave=true;showPortaal();}
 function loadSavedProfiel(sp){if(sp.opleiding)curOpl=sp.opleiding;if(sp.kan_vaardigh&&sp.kan_vaardigh.length)selKan=sp.kan_vaardigh;if(sp.wil_vaardigh&&sp.wil_vaardigh.length)selLeren=sp.wil_vaardigh;if(sp.sel_kerntaken&&sp.sel_kerntaken.length)selKt=sp.sel_kerntaken;if(sp.werkervaring)WERKERVARING=sp.werkervaring;if(sp.opleidingen)OPLEIDINGEN=sp.opleidingen;if(sp.sollicitaties)SOLLICITATIES=sp.sollicitaties;if(sp.school){var el=document.getElementById('inSchool');if(el)el.value=sp.school;}if(sp.startdatum){var el=document.getElementById('inStart');if(el)el.value=sp.startdatum;}if(sp.morgen_zin){var el=document.getElementById('morgenTxt');if(el)el.value=sp.morgen_zin;}}
-async function saveProfiel(){if(!_sbUser)return;await _sb.from('student_profielen').update({opleiding:curOpl,kan_vaardigh:selKan,wil_vaardigh:selLeren,sel_kerntaken:selKt,werkervaring:WERKERVARING,opleidingen:OPLEIDINGEN,sollicitaties:SOLLICITATIES,school:(document.getElementById('inSchool')||{}).value||'',startdatum:(document.getElementById('inStart')||{}).value||'',morgen_zin:(document.getElementById('morgenTxt')||{}).value||'',stap_bereikt:curS,updated_at:new Date().toISOString()}).eq('student_id',_sbUser.id);}
+async function saveProfiel(){
+  if(!_sbUser)return;
+  var naam=(document.getElementById('inNaam')||{}).value||'';
+  var ach=(document.getElementById('inAch')||{}).value||'';
+  var slug=maakSlug(naam+' '+ach);
+  await _sb.from('student_profielen').update({
+    opleiding:curOpl,kan_vaardigh:selKan,wil_vaardigh:selLeren,sel_kerntaken:selKt,
+    werkervaring:WERKERVARING,opleidingen:OPLEIDINGEN,sollicitaties:SOLLICITATIES,
+    school:(document.getElementById('inSchool')||{}).value||'',
+    startdatum:(document.getElementById('inStart')||{}).value||'',
+    morgen_zin:(document.getElementById('morgenTxt')||{}).value||'',
+    voornaam:naam, achternaam:ach,
+    slug:slug,
+    stap_bereikt:curS,updated_at:new Date().toISOString()
+  }).eq('student_id',_sbUser.id);
+  var su=document.getElementById('shareUrl');
+  if(su&&slug)su.textContent='stagelink.nl/'+slug;
+}
+function maakSlug(tekst){
+  return tekst.toLowerCase().trim()
+    .replace(/[àáâãäå]/g,'a').replace(/[èéêë]/g,'e')
+    .replace(/[ìíîï]/g,'i').replace(/[òóôõö]/g,'o')
+    .replace(/[ùúûü]/g,'u').replace(/ñ/g,'n').replace(/ç/g,'c')
+    .replace(/[^a-z0-9\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-').replace(/^-|-$/g,'');
+}
 function addLogoutBtn(email){var tb=document.querySelector('.topbar');if(!tb||document.getElementById('logoutBtn'))return;var d=document.createElement('div');d.style.cssText='font-size:12px;color:var(--gt);display:flex;align-items:center;gap:8px;';d.innerHTML='<span>'+email+'</span><button id="logoutBtn" onclick="doLogout()" style="padding:4px 10px;font-size:11px;border:1px solid var(--br2);border-radius:5px;background:white;cursor:pointer;">Uitloggen</button>';tb.appendChild(d);}
 function authTab(i){document.getElementById('formLogin').style.display=i===0?'':'none';document.getElementById('formReg').style.display=i===1?'':'none';var tl=document.getElementById('tabLogin'),tr=document.getElementById('tabReg');tl.style.borderBottomColor=i===0?'#534AB7':'transparent';tl.style.color=i===0?'#534AB7':'#6B6860';tr.style.borderBottomColor=i===1?'#534AB7':'transparent';tr.style.color=i===1?'#534AB7':'#6B6860';document.getElementById('loginErr').style.display='none';}
 function setRole(btn,role){_sbRole=role;document.querySelectorAll('.roleBtn').forEach(function(b){b.style.border='2px solid #D0CCC5';b.style.background='white';b.style.color='#6B6860';});btn.style.border='2px solid #534AB7';btn.style.background='#EEEDFE';btn.style.color='#3C3489';var kd=document.getElementById('klasDiv');if(kd)kd.style.display=role==='student'?'':'none';}
@@ -2943,7 +2967,104 @@ function setTheme(theme) {
 
 // ============ INIT ============
 buildLangs();
-document.addEventListener("DOMContentLoaded",function(){setTimeout(initSupabase,200);setTheme("classic");});function updateProfileVideo(src) {
+// ── PUBLIEK PROFIEL VIA URL ──
+async function checkPublicProfile() {
+  var path = window.location.pathname.replace(/^\//, '').trim();
+  if (!path || path === 'index.html') return false;
+  // Verberg de normale app en toon laad-scherm
+  document.body.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:inherit;background:#F7F6F2;padding:20px;">'
+    + '<div style="width:40px;height:40px;border:3px solid #534AB7;border-top-color:transparent;border-radius:50%;animation:spin .8s linear infinite;margin-bottom:20px;"></div>'
+    + '<div style="font-size:14px;color:#6B6860;">Profiel laden...</div>'
+    + '<style>@keyframes spin{to{transform:rotate(360deg)}}</style>'
+    + '</div>';
+  // Wacht tot Supabase beschikbaar is
+  await new Promise(function(r){setTimeout(r,600);});
+  var sb = window._sb;
+  if (!sb) {
+    // init supabase inline
+    var SUPABASE_URL='https://rhpqznyfnxrjlrsjiyfw.supabase.co';
+    var SUPABASE_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJocHF6bnlmbnhyamxyc2ppeWZ3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDU1MDY0NDYsImV4cCI6MjA2MTA4MjQ0Nn0.GajD8P1f1FJBDxY7LtKdh2OO1L9VyqHB1qd4Bqk9p6c';
+    sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+  var res = await sb.from('student_profielen').select('*').eq('slug', path).single();
+  if (!res.data) {
+    renderPublicNotFound(path);
+    return true;
+  }
+  renderPublicProfile(res.data);
+  return true;
+}
+
+function renderPublicNotFound(slug) {
+  document.body.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:inherit;background:#F7F6F2;padding:20px;text-align:center;">'
+    + '<div style="font-size:48px;margin-bottom:16px;">🔍</div>'
+    + '<div style="font-size:20px;font-weight:800;color:#1A1916;margin-bottom:8px;">Profiel niet gevonden</div>'
+    + '<div style="font-size:14px;color:#6B6860;margin-bottom:24px;">Er is geen profiel gevonden voor <strong>' + slug + '</strong>.</div>'
+    + '<a href="/" style="background:#534AB7;color:white;padding:10px 24px;border-radius:10px;text-decoration:none;font-weight:700;font-size:14px;">← Terug naar TalentFlow</a>'
+    + '</div>';
+}
+
+function renderPublicProfile(p) {
+  var naam = ((p.voornaam||'') + ' ' + (p.achternaam||'')).trim() || 'Student';
+  var school = p.school || 'MBO';
+  var opl = {jam:'Junior accountmanager',com:'Commercieel medewerker',ecs:'E-commerce specialist',log:'Logistiek medewerker',oh:'Ondernemer handel',ret:'Retailmedewerker',rsp:'Retailspecialist'}[p.opleiding] || p.opleiding || '';
+  var morgen = p.morgen_zin || '';
+  var kan = (p.kan_vaardigh||[]).slice(0,6);
+  var leren = (p.wil_vaardigh||[]).slice(0,4);
+
+  var videoHtml = '';
+  if (p.video_url) {
+    videoHtml = '<video controls playsinline style="width:100%;border-radius:12px;background:#000;max-height:360px;display:block;margin-bottom:16px;" src="'+p.video_url+'"></video>';
+  }
+
+  var kanHtml = kan.map(function(s){return '<span style="font-size:12px;padding:4px 12px;border-radius:20px;background:#EEEDFE;color:#534AB7;font-weight:600;">'+s+'</span>';}).join('');
+  var lerenHtml = leren.map(function(s){return '<span style="font-size:12px;padding:4px 12px;border-radius:20px;background:#E1F5EE;color:#1B7A4A;font-weight:600;">'+s+'</span>';}).join('');
+
+  document.body.innerHTML = '<div style="max-width:480px;margin:0 auto;padding:20px 16px;font-family:-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif;">'
+
+    // Header
+    + '<div style="text-align:center;margin-bottom:24px;">'
+    + '<div style="font-size:13px;font-weight:700;color:#534AB7;letter-spacing:.5px;margin-bottom:16px;">✦ TalentFlow stageprofiel</div>'
+    + '<div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#534AB7,#7C75D4);color:white;font-size:28px;font-weight:800;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">'+naam[0].toUpperCase()+'</div>'
+    + '<div style="font-size:24px;font-weight:800;color:#1A1916;margin-bottom:4px;">'+naam+'</div>'
+    + '<div style="font-size:13px;color:#534AB7;font-weight:600;margin-bottom:4px;">'+opl+'</div>'
+    + '<div style="font-size:12px;color:#6B6860;">✓ Geverifieerd · '+school+'</div>'
+    + '</div>'
+
+    // Video
+    + (videoHtml ? '<div style="margin-bottom:20px;">'+videoHtml+'</div>' : '')
+
+    // Over mij
+    + (morgen ? '<div style="background:white;border:1px solid #E8E6E1;border-radius:14px;padding:16px;margin-bottom:14px;">'
+      + '<div style="font-size:11px;font-weight:700;color:#6B6860;text-transform:uppercase;letter-spacing:.6px;margin-bottom:8px;">Over mij</div>'
+      + '<div style="font-size:14px;color:#1A1916;line-height:1.65;font-style:italic;">"'+morgen+'"</div>'
+      + '</div>' : '')
+
+    // Vaardigheden
+    + (kanHtml ? '<div style="background:white;border:1px solid #E8E6E1;border-radius:14px;padding:16px;margin-bottom:14px;">'
+      + '<div style="font-size:11px;font-weight:700;color:#6B6860;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">Wat ik kan</div>'
+      + '<div style="display:flex;flex-wrap:wrap;gap:6px;">'+kanHtml+'</div>'
+      + '</div>' : '')
+
+    // Wil leren
+    + (lerenHtml ? '<div style="background:white;border:1px solid #E8E6E1;border-radius:14px;padding:16px;margin-bottom:20px;">'
+      + '<div style="font-size:11px;font-weight:700;color:#6B6860;text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px;">Wil ik leren</div>'
+      + '<div style="display:flex;flex-wrap:wrap;gap:6px;">'+lerenHtml+'</div>'
+      + '</div>' : '')
+
+    // Contact knop
+    + '<a href="mailto:?subject=Stage interesse — '+naam+'&body=Hallo '+naam+',%0A%0AIk heb je stageprofiel bekeken op TalentFlow en ben geïnteresseerd.%0A%0AMet vriendelijke groet" '
+    + 'style="display:block;text-align:center;background:#534AB7;color:white;padding:14px;border-radius:12px;text-decoration:none;font-weight:700;font-size:15px;margin-bottom:16px;">📩 Neem contact op</a>'
+
+    + '<div style="text-align:center;font-size:11px;color:#B4B2A9;">Gemaakt met <a href="/" style="color:#534AB7;text-decoration:none;">TalentFlow</a></div>'
+    + '</div>';
+}
+
+document.addEventListener("DOMContentLoaded",function(){
+  checkPublicProfile().then(function(isPublic){
+    if(!isPublic){setTimeout(initSupabase,200);setTheme("classic");}
+  });
+});function updateProfileVideo(src) {
   var prevEl = document.getElementById('prevVideoEl');
   var prevWr = document.getElementById('prevVideoWrap');
   if (!prevWr) return;
@@ -4243,7 +4364,24 @@ function initSupabase(){
   }_sb=window.supabase.createClient('https://rhpqznyfnxrjlrsjiyfw.supabase.co','sb_publishable_lblRq1p075VdzLkWBA3fDA_IfWLx6kF');checkSession();}
 async function checkSession(){var overlay=document.getElementById('loginOverlay');var res=await _sb.auth.getUser();var user=res.data.user;if(!user){if(overlay)overlay.style.display='flex';return;}_sbUser=user;if(overlay)overlay.style.display='none';var pr=await _sb.from('profiles').select('*').eq('id',user.id).single();var prof=pr.data;if(prof){_sbRole=prof.role;var n=document.getElementById('inNaam');if(n&&!n.value)n.value=prof.voornaam||'';var a=document.getElementById('inAch');if(a&&!a.value)a.value=prof.achternaam||'';var e=document.getElementById('inEmail');if(e&&!e.value)e.value=user.email||'';if(prof.role==='docent')setMode('docent');}var sp=await _sb.from('student_profielen').select('*').eq('student_id',user.id).single();if(sp.data)loadSavedProfiel(sp.data);addLogoutBtn(user.email);window._autoSave=true;showPortaal();}
 function loadSavedProfiel(sp){if(sp.opleiding)curOpl=sp.opleiding;if(sp.kan_vaardigh&&sp.kan_vaardigh.length)selKan=sp.kan_vaardigh;if(sp.wil_vaardigh&&sp.wil_vaardigh.length)selLeren=sp.wil_vaardigh;if(sp.sel_kerntaken&&sp.sel_kerntaken.length)selKt=sp.sel_kerntaken;if(sp.werkervaring)WERKERVARING=sp.werkervaring;if(sp.opleidingen)OPLEIDINGEN=sp.opleidingen;if(sp.sollicitaties)SOLLICITATIES=sp.sollicitaties;if(sp.school){var el=document.getElementById('inSchool');if(el)el.value=sp.school;}if(sp.startdatum){var el=document.getElementById('inStart');if(el)el.value=sp.startdatum;}if(sp.morgen_zin){var el=document.getElementById('morgenTxt');if(el)el.value=sp.morgen_zin;}}
-async function saveProfiel(){if(!_sbUser)return;await _sb.from('student_profielen').update({opleiding:curOpl,kan_vaardigh:selKan,wil_vaardigh:selLeren,sel_kerntaken:selKt,werkervaring:WERKERVARING,opleidingen:OPLEIDINGEN,sollicitaties:SOLLICITATIES,school:(document.getElementById('inSchool')||{}).value||'',startdatum:(document.getElementById('inStart')||{}).value||'',morgen_zin:(document.getElementById('morgenTxt')||{}).value||'',stap_bereikt:curS,updated_at:new Date().toISOString()}).eq('student_id',_sbUser.id);}
+async function saveProfiel(){
+  if(!_sbUser)return;
+  var naam=(document.getElementById('inNaam')||{}).value||'';
+  var ach=(document.getElementById('inAch')||{}).value||'';
+  var slug=maakSlug(naam+' '+ach);
+  await _sb.from('student_profielen').update({
+    opleiding:curOpl,kan_vaardigh:selKan,wil_vaardigh:selLeren,sel_kerntaken:selKt,
+    werkervaring:WERKERVARING,opleidingen:OPLEIDINGEN,sollicitaties:SOLLICITATIES,
+    school:(document.getElementById('inSchool')||{}).value||'',
+    startdatum:(document.getElementById('inStart')||{}).value||'',
+    morgen_zin:(document.getElementById('morgenTxt')||{}).value||'',
+    voornaam:naam, achternaam:ach,
+    slug:slug,
+    stap_bereikt:curS,updated_at:new Date().toISOString()
+  }).eq('student_id',_sbUser.id);
+  var su=document.getElementById('shareUrl');
+  if(su&&slug)su.textContent='stagelink.nl/'+slug;
+}
 function addLogoutBtn(email){var tb=document.querySelector('.topbar');if(!tb||document.getElementById('logoutBtn'))return;var d=document.createElement('div');d.style.cssText='font-size:12px;color:var(--gt);display:flex;align-items:center;gap:8px;';d.innerHTML='<span>'+email+'</span><button id="logoutBtn" onclick="doLogout()" style="padding:4px 10px;font-size:11px;border:1px solid var(--br2);border-radius:5px;background:white;cursor:pointer;">Uitloggen</button>';tb.appendChild(d);}
 function authTab(i){document.getElementById('formLogin').style.display=i===0?'':'none';document.getElementById('formReg').style.display=i===1?'':'none';var tl=document.getElementById('tabLogin'),tr=document.getElementById('tabReg');tl.style.borderBottomColor=i===0?'#534AB7':'transparent';tl.style.color=i===0?'#534AB7':'#6B6860';tr.style.borderBottomColor=i===1?'#534AB7':'transparent';tr.style.color=i===1?'#534AB7':'#6B6860';document.getElementById('loginErr').style.display='none';}
 function setRole(btn,role){_sbRole=role;document.querySelectorAll('.roleBtn').forEach(function(b){b.style.border='2px solid #D0CCC5';b.style.background='white';b.style.color='#6B6860';});btn.style.border='2px solid #534AB7';btn.style.background='#EEEDFE';btn.style.color='#3C3489';var kd=document.getElementById('klasDiv');if(kd)kd.style.display=role==='student'?'':'none';}
